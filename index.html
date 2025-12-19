@@ -31,27 +31,27 @@
   	--sb-size: 10px;
       }
 
-        body::-webkit-scrollbar {
-          width: var(--sb-size);
-        }
-        
-        body::-webkit-scrollbar-track {
-          background: var(--sb-track-color);
-          border-radius: 6px;
-        }
-        
-        body::-webkit-scrollbar-thumb {
-          background: var(--sb-thumb-color);
-          border-radius: 6px;
-          border: 3px solid #232E33;
-        }
-        
-        @supports not selector(::-webkit-scrollbar) {
-          body {
-              scrollbar-color: var(--sb-thumb-color)
-                             var(--sb-track-color);
-          }
-        }
+	body::-webkit-scrollbar {
+	  width: var(--sb-size);
+	}
+	
+	body::-webkit-scrollbar-track {
+	  background: var(--sb-track-color);
+	  border-radius: 6px;
+	}
+	
+	body::-webkit-scrollbar-thumb {
+	  background: var(--sb-thumb-color);
+	  border-radius: 6px;
+	  border: 3px solid #232E33;
+	}
+	
+	@supports not selector(::-webkit-scrollbar) {
+	  body {
+	      scrollbar-color: var(--sb-thumb-color)
+	                     var(--sb-track-color);
+	  }
+	}
 
       .wrap {
         width: 100%;
@@ -76,7 +76,7 @@
 
       .card {
         background: var(--bg-card);
-        border: 1px solid var(--border);
+        border: 2px solid var(--border);
         border-radius: var(--radius);
         padding: 16px 18px;
         box-shadow: 0 14px 35px rgba(15,23,42,0.5);
@@ -248,10 +248,9 @@
         margin-bottom:3px;
       }
       .tap-src-header{
-        color:white; 
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-        font-size:0.78rem;
-       }
+		color:white; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+		        font-size:0.78rem;
+		}
       .tap-src {
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
         font-size:0.78rem;
@@ -272,6 +271,129 @@
         color:var(--muted);
       }
 
+ .info-btn {
+    
+   background: var(--bg);
+    border: 2px solid var(--border);
+    color: var(--text);
+    padding: 3px 7px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(1px);
+    border-radius: 8px;
+    margin: 0% 11px;
+    }
+
+    .info-btn:hover {
+      background: rgba(59, 130, 246, 0.3);
+      border-color: var(--primary);
+     
+    }
+
+    .info-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--bg);
+      border: 2px solid var(--text);
+      border-radius: var(--radius);
+      padding: 24px;
+      max-width: 420px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+      z-index: 1000;
+      backdrop-filter: blur(20px);
+    }
+
+    .info-popup.active {
+      display: block;
+      animation: popupSlideIn 0.3s ease-out;
+    }
+
+    @keyframes popupSlideIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -60%) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    .popup-close {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
+
+    .popup-close:hover {
+      background: rgba(255,255,255,0.1);
+      color: var(--text);
+    }
+
+    .popup-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    .popup-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .popup-step {
+      padding: 12px;
+      background: (--text);
+      border-left: 2px solid var(--text)
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+
+    .popup-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      z-index: 999;
+      backdrop-filter: blur(4px);
+    }
+
+    .popup-overlay.active {
+      display: block;
+    }
+	.container-header{
+	    display: flex;
+	    align-items: flex-end;
+	    flex-direction: row;
+	    flex-wrap: nowrap;
+	    justify-content: flex-start;
+	    padding: 10px 4px;
+	}
+
       @media (max-width:600px){
         body {
           padding: 16px 12px;
@@ -280,54 +402,64 @@
         .header h1 {
           font-size: 1.4rem;
         }
-
-        .header p {
-          font-size: 0.85rem;
-        }
-
-        .card {
-          padding: 14px;
-        }
-
-        .row {
-          flex-direction: column;
-          gap: 8px;
-        }
-
-        input#address {
-          font-size: 0.95rem;
-          padding: 12px;
-        }
-
-        button#loadBtn {
-          width: 100%;
-          padding: 12px;
-          font-size: 0.9rem;
-        }
-
-        .stats {
-          flex-direction: column;
-          gap: 8px;
-        }
-
-        .stat-value {
-          font-size: 1.25rem;
-        }
-
-        .tap-card {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 6px;
-        }
-
-        .tap-amount {
-          align-self: flex-end;
-          font-size: 1.05rem;
-        }
-
-        .tap-src {
-          font-size: 0.75rem;
-        }
+		  .info-popup {
+		        max-width: 90vw;
+		        margin: 0 16px;
+		        padding: 20px;
+		      }
+	      
+	      .info-btn {
+	
+	        padding: 5px 8px;
+	        font-size: 0.75rem;
+	      }
+	        .header p {
+	          font-size: 0.85rem;
+	        }
+	
+	        .card {
+	          padding: 14px;
+	        }
+	
+	        .row {
+	          flex-direction: column;
+	          gap: 8px;
+	        }
+	
+	        input#address {
+	          font-size: 0.95rem;
+	          padding: 12px;
+	        }
+	
+	        button#loadBtn {
+	          width: 100%;
+	          padding: 12px;
+	          font-size: 0.9rem;
+	        }
+	
+	        .stats {
+	          flex-direction: column;
+	          gap: 8px;
+	        }
+	
+	        .stat-value {
+	          font-size: 1.25rem;
+	        }
+	
+	        .tap-card {
+	          flex-direction: column;
+	          align-items: flex-start;
+	          gap: 6px;
+	        }
+	
+	        .tap-amount {
+	          align-self: flex-end;
+	          font-size: 1.05rem;
+	        }
+	
+	        .tap-src {
+	          font-size: 0.75rem;
+	        }
       }
 
       @media (max-width:380px){
@@ -348,20 +480,43 @@
       <h1>Popit Rewards</h1>
     </header>
 
-    <section class="card">
-      <label for="address" class="label">Wallet address</label>
-      <div class="row">
-        <input id="address"  placeholder="Example: 0:axxx...." />
-        <button id="loadBtn" onclick="load()">Load</button>
+     <section class="card">
+      <div class="container-header">
+    	  <label for="address" class="label">Wallet address</label>
+	  	  <button type="button" id="infoBtn" class="info-btn" title="How to find your wallet address">ℹ️</button>
+	 </div>
+      <div style="position: relative;">
+        <div class="row">
+          <input id="address" placeholder="Example: 0axxx...." />
+          <button id="loadBtn" onclick="load()">Load</button>
+        </div>
       </div>
 
-     
+      
 
-      <div id="loading" class="loading" style="display:none">
+      <div id="loading" class="loading" style="display: none;">
         <div class="spinner"></div>
-        <span id="status">Loading…</span>
+        <span id="status">Loading...</span>
       </div>
     </section>
+
+    <!-- POPUP INFORMATIVO -->
+    <div id="popupOverlay" class="popup-overlay"></div>
+    <div id="infoPopup" class="info-popup">
+      <button id="popupClose" class="popup-close">&times;</button>
+      <div class="popup-title">How to find your POPIT GAME wallet address</div>
+      <div class="popup-steps">
+        <div class="popup-step">
+          <strong>1.</strong> Go to <a href="https://acki.live" target="_blank">acki.live</a>
+        </div>
+        <div class="popup-step">
+          <strong>2.</strong> Search for your wallet name in the search bar
+        </div>
+        <div class="popup-step">
+          <strong>3.</strong> Copy the wallet address from the <strong>"POPIT GAME"</strong> section
+        </div>
+      </div>
+    </div>
 
     <section id="stats" class="card stats" style="display:none">
       <div class="stat">
@@ -426,66 +581,66 @@
             document.getElementById('balance').textContent = nackl ? (parseInt(nackl.value, 16) / 1e9).toFixed(2) : '0.00';
             
 
-            const taps = [];
-            let hasNextPage = true;
-            let cursor = null;
-            let totalFetched = 0;
-            
-            while (hasNextPage) {
-                const msgRes = await fetch(API, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        query: `query($a:String!, $after:String){
-                            blockchain{
-                                account(address:$a){
-                                    messages(first:50, msg_type:[IntIn], after:$after){
-                                        edges{
-                                            node{
-                                                id
-                                                created_at
-                                                src
-                                                value_other{currency value}
-                                                body
-                                            }
-                                        }
-                                        pageInfo{
-                                            endCursor
-                                            hasNextPage
-                                        }
-                                    }
-                                }
-                            }
-                        }`,
-                        variables: {a: addr, after: cursor}
-                    })
-                }).then(r => r.json());
-                
-                const messages = msgRes.data.blockchain.account.messages;
-                const edges = messages?.edges || [];
-    
-
-            edges.forEach(({node}) => {
-                if (node.body === null && node.value_other) {
-                    const reward = node.value_other.find(v => v.currency === 1);
-                    if (reward) {
-                        taps.push({
-                            id: node.id,
-                            src: node.src,
-                            reward: parseInt(reward.value, 16) / 1e9,
-                            timestamp: node.created_at,
-                            time: new Date(node.created_at * 1000).toLocaleString('it-IT', {
-                                day: '2-digit', month: '2-digit', year: 'numeric',
-                                hour: '2-digit', minute: '2-digit', second: '2-digit'
-                            })
-                        });
-                    }
-                }
-            });
-            
-            hasNextPage = messages.pageInfo?.hasNextPage || false;
-            cursor = messages.pageInfo?.endCursor || null;
-        }
+			const taps = [];
+			let hasNextPage = true;
+			let cursor = null;
+			let totalFetched = 0;
+			
+			while (hasNextPage) {
+			    const msgRes = await fetch(API, {
+			        method: 'POST',
+			        headers: {'Content-Type': 'application/json'},
+			        body: JSON.stringify({
+			            query: `query($a:String!, $after:String){
+			                blockchain{
+			                    account(address:$a){
+			                        messages(first:50, msg_type:[IntIn], after:$after){
+			                            edges{
+			                                node{
+			                                    id
+			                                    created_at
+			                                    src
+			                                    value_other{currency value}
+			                                    body
+			                                }
+			                            }
+			                            pageInfo{
+			                                endCursor
+			                                hasNextPage
+			                            }
+			                        }
+			                    }
+			                }
+			            }`,
+			            variables: {a: addr, after: cursor}
+			        })
+			    }).then(r => r.json());
+			    
+			    const messages = msgRes.data.blockchain.account.messages;
+			    const edges = messages?.edges || [];
+			    
+			
+			    edges.forEach(({node}) => {
+			        if (node.body === null && node.value_other) {
+			            const reward = node.value_other.find(v => v.currency === 1);
+			            if (reward) {
+			                taps.push({
+			                    id: node.id,
+			                    src: node.src,
+			                    reward: parseInt(reward.value, 16) / 1e9,
+			                    timestamp: node.created_at,
+			                    time: new Date(node.created_at * 1000).toLocaleString('it-IT', {
+			                        day: '2-digit', month: '2-digit', year: 'numeric',
+			                        hour: '2-digit', minute: '2-digit', second: '2-digit'
+			                    })
+			                });
+			            }
+			        }
+			    });
+			    
+			    hasNextPage = messages.pageInfo?.hasNextPage || false;
+			    cursor = messages.pageInfo?.endCursor || null;
+			}
 
 
 
@@ -525,6 +680,32 @@
     
     document.getElementById('address').addEventListener('keypress', e => {
         if (e.key === 'Enter') load();
+    });
+document.addEventListener('DOMContentLoaded', function() {
+      const infoBtn = document.getElementById('infoBtn');
+      const popup = document.getElementById('infoPopup');
+      const overlay = document.getElementById('popupOverlay');
+      const closeBtn = document.getElementById('popupClose');
+
+      infoBtn.addEventListener('click', function() {
+        popup.classList.add('active');
+        overlay.classList.add('active');
+      });
+
+      function closePopup() {
+        popup.classList.remove('active');
+        overlay.classList.remove('active');
+      }
+
+      closeBtn.addEventListener('click', closePopup);
+      overlay.addEventListener('click', closePopup);
+
+      // Chiudi con ESC
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && popup.classList.contains('active')) {
+          closePopup();
+        }
+      });
     });
 </script>
 
