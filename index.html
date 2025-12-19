@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Popit Dashboard - FIXED</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popit Rewards</title>
     <style>
       :root {
         --bg: #020617;
@@ -24,7 +26,32 @@
         padding: 32px 16px;
         display:flex;
         justify-content:center;
+    	--sb-track-color: #020617;
+      	--sb-thumb-color: #3b82f6;
+      	--sb-size: 10px;
       }
+        
+        body::-webkit-scrollbar {
+          width: var(--sb-size);
+        }
+        
+        body::-webkit-scrollbar-track {
+          background: var(--sb-track-color);
+          border-radius: 6px;
+        }
+        
+        body::-webkit-scrollbar-thumb {
+          background: var(--sb-thumb-color);
+          border-radius: 6px;
+          border: 3px solid #232E33;
+        }
+        
+        @supports not selector(::-webkit-scrollbar) {
+          body {
+              scrollbar-color: var(--sb-thumb-color)
+                             var(--sb-track-color);
+          }
+        }
 
       .wrap {
         width: 100%;
@@ -238,80 +265,72 @@
       }
 
       @media (max-width:600px){
-        .row { flex-direction:column; }
-        button#loadBtn { width:100%; }
-        .stats { flex-direction:column; }
-        .tap-card { flex-direction:column; align-items:flex-start; }
+        body {
+          padding: 16px 12px;
+        }
+
+        .header h1 {
+          font-size: 1.4rem;
+        }
+
+        .header p {
+          font-size: 0.85rem;
+        }
+
+        .card {
+          padding: 14px;
+        }
+
+        .row {
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        input#address {
+          font-size: 0.95rem;
+          padding: 12px;
+        }
+
+        button#loadBtn {
+          width: 100%;
+          padding: 12px;
+          font-size: 0.9rem;
+        }
+
+        .stats {
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .stat-value {
+          font-size: 1.25rem;
+        }
+
+        .tap-card {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 6px;
+        }
+
+        .tap-amount {
+          align-self: flex-end;
+          font-size: 1.05rem;
+        }
+
+        .tap-src {
+          font-size: 0.75rem;
+        }
       }
-@media (max-width:600px){
 
-  body {
-    padding: 16px 12px;
-  }
+      @media (max-width:380px){
+        .header h1 {
+          font-size: 1.25rem;
+        }
 
-  .header h1 {
-    font-size: 1.4rem;
-  }
-
-  .header p {
-    font-size: 0.85rem;
-  }
-
-  .card {
-    padding: 14px;
-  }
-
-  .row {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  input#address {
-    font-size: 0.95rem;
-    padding: 12px;
-  }
-
-  button#loadBtn {
-    width: 100%;
-    padding: 12px;
-    font-size: 0.9rem;
-  }
-
-  .stats {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .stat-value {
-    font-size: 1.25rem;
-  }
-
-  .tap-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
-
-  .tap-amount {
-    align-self: flex-end;
-    font-size: 1.05rem;
-  }
-
-  .tap-src {
-    font-size: 0.75rem;
-  }
-}
-
-/* EXTRA: telefoni molto piccoli */
-@media (max-width:380px){
-  .header h1 {
-    font-size: 1.25rem;
-  }
-
-  .stat-value {
-    font-size: 1.15rem;
-  }
-}
+        .stat-value {
+          font-size: 1.15rem;
+        }
+      }
 
     </style>
 </head>
@@ -319,7 +338,6 @@
   <div class="wrap">
     <header class="header">
       <h1>Popit Rewards</h1>
-      <p>Recent reward messages for an Acki Nacki address</p>
     </header>
 
     <section class="card">
