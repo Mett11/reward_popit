@@ -6,14 +6,14 @@
     <title>Popit Rewards</title>
     <style>
       :root {
-        --bg: #020617;
-        --bg-card: #020617;
-        --border: #1e293b;
-        --primary: #3b82f6;
-        --accent: #22c55e;
-        --text: #e5e7eb;
-        --muted: #9ca3af;
-        --radius: 14px;
+            --bg: #101010;
+    --bg-card: #101010;
+    --border: #6b6b6b;
+    --primary: #3b82f6;
+    --accent: #2cff7a;
+    --text: #e5e7eb;
+    --muted: #e3e3e3;
+    --radius: 14px;
       }
 
       * { box-sizing:border-box; margin:0; padding:0; }
@@ -26,11 +26,11 @@
         padding: 32px 16px;
         display:flex;
         justify-content:center;
-    	--sb-track-color: #020617;
-      	--sb-thumb-color: #3b82f6;
-      	--sb-size: 10px;
+	--sb-track-color: #020617;
+  	--sb-thumb-color: #3b82f6;
+  	--sb-size: 10px;
       }
-        
+
         body::-webkit-scrollbar {
           width: var(--sb-size);
         }
@@ -73,6 +73,7 @@
         color: var(--muted);
       }
 
+
       .card {
         background: var(--bg-card);
         border: 1px solid var(--border);
@@ -82,6 +83,7 @@
         margin-bottom: 14px;
       }
 
+      #balance,#recentRewards{color: var(--accent);}
       .label {
         display:block;
         font-size:0.8rem;
@@ -101,10 +103,10 @@
         padding:10px 12px;
         border-radius:10px;
         border:1px solid var(--border);
-        background:#020617;
         color:var(--text);
         font-size:0.9rem;
         outline:none;
+        background: var(--bg)
       }
 
       input#address::placeholder { color:#64748b; }
@@ -176,8 +178,9 @@
         flex:1;
         padding:8px 10px;
         border-radius:10px;
-        border:1px solid #111827;
-        background:#020617;
+        border:1px solid var(--border);
+        background: var(--bg)
+     
       }
 
       .stat-label {
@@ -195,8 +198,9 @@
 
       .stat-note {
         font-size:0.75rem;
-        color:var(--muted);
+        color:white;
         margin-top:2px;
+        font-weight: bold;
       }
 
       .list-header {
@@ -243,7 +247,11 @@
         color:#60a5fa;
         margin-bottom:3px;
       }
-
+      .tap-src-header{
+        color:white; 
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size:0.78rem;
+       }
       .tap-src {
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
         font-size:0.78rem;
@@ -418,73 +426,73 @@
             document.getElementById('balance').textContent = nackl ? (parseInt(nackl.value, 16) / 1e9).toFixed(2) : '0.00';
             
 
-const taps = [];
-let hasNextPage = true;
-let cursor = null;
-let totalFetched = 0;
-
-while (hasNextPage) {
-    const msgRes = await fetch(API, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            query: `query($a:String!, $after:String){
-                blockchain{
-                    account(address:$a){
-                        messages(first:50, msg_type:[IntIn], after:$after){
-                            edges{
-                                node{
-                                    id
-                                    created_at
-                                    src
-                                    value_other{currency value}
-                                    body
+            const taps = [];
+            let hasNextPage = true;
+            let cursor = null;
+            let totalFetched = 0;
+            
+            while (hasNextPage) {
+                const msgRes = await fetch(API, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        query: `query($a:String!, $after:String){
+                            blockchain{
+                                account(address:$a){
+                                    messages(first:50, msg_type:[IntIn], after:$after){
+                                        edges{
+                                            node{
+                                                id
+                                                created_at
+                                                src
+                                                value_other{currency value}
+                                                body
+                                            }
+                                        }
+                                        pageInfo{
+                                            endCursor
+                                            hasNextPage
+                                        }
+                                    }
                                 }
                             }
-                            pageInfo{
-                                endCursor
-                                hasNextPage
-                            }
-                        }
-                    }
-                }
-            }`,
-            variables: {a: addr, after: cursor}
-        })
-    }).then(r => r.json());
-    
-    const messages = msgRes.data.blockchain.account.messages;
-    const edges = messages?.edges || [];
+                        }`,
+                        variables: {a: addr, after: cursor}
+                    })
+                }).then(r => r.json());
+                
+                const messages = msgRes.data.blockchain.account.messages;
+                const edges = messages?.edges || [];
     
 
-    edges.forEach(({node}) => {
-        if (node.body === null && node.value_other) {
-            const reward = node.value_other.find(v => v.currency === 1);
-            if (reward) {
-                taps.push({
-                    id: node.id,
-                    src: node.src,
-                    reward: parseInt(reward.value, 16) / 1e9,
-                    timestamp: node.created_at,
-                    time: new Date(node.created_at * 1000).toLocaleString('it-IT', {
-                        day: '2-digit', month: '2-digit', year: 'numeric',
-                        hour: '2-digit', minute: '2-digit', second: '2-digit'
-                    })
-                });
-            }
+            edges.forEach(({node}) => {
+                if (node.body === null && node.value_other) {
+                    const reward = node.value_other.find(v => v.currency === 1);
+                    if (reward) {
+                        taps.push({
+                            id: node.id,
+                            src: node.src,
+                            reward: parseInt(reward.value, 16) / 1e9,
+                            timestamp: node.created_at,
+                            time: new Date(node.created_at * 1000).toLocaleString('it-IT', {
+                                day: '2-digit', month: '2-digit', year: 'numeric',
+                                hour: '2-digit', minute: '2-digit', second: '2-digit'
+                            })
+                        });
+                    }
+                }
+            });
+            
+            hasNextPage = messages.pageInfo?.hasNextPage || false;
+            cursor = messages.pageInfo?.endCursor || null;
         }
-    });
-    
-    hasNextPage = messages.pageInfo?.hasNextPage || false;
-    cursor = messages.pageInfo?.endCursor || null;
-}
 
 
 
             taps.sort((a, b) => b.timestamp - a.timestamp);
    
             document.getElementById('taps').textContent = taps.length;
-            document.getElementById('recentRewards').textContent = taps.reduce((s, t) => s + t.reward, 0).toFixed(2);
+            document.getElementById('recentRewards').textContent = "+"+taps.reduce((s, t) => s + t.reward, 0).toFixed(2);
             document.getElementById('stats').style.display = 'flex';
             
             
@@ -495,7 +503,9 @@ while (hasNextPage) {
                     <div class="tap-card">
                         <div class="tap-meta">
                             <div class="tap-time">${t.time}</div>
+                            
                             <div class="tap-src">${t.src}</div>
+
                         </div>
                         <div class="tap-amount">${t.reward.toFixed(4)} <span>NACKL</span></div>
                     </div>
