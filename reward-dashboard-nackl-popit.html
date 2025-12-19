@@ -243,75 +243,75 @@
         .stats { flex-direction:column; }
         .tap-card { flex-direction:column; align-items:flex-start; }
       }
-@media (max-width:600px){
-
-  body {
-    padding: 16px 12px;
-  }
-
-  .header h1 {
-    font-size: 1.4rem;
-  }
-
-  .header p {
-    font-size: 0.85rem;
-  }
-
-  .card {
-    padding: 14px;
-  }
-
-  .row {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  input#address {
-    font-size: 0.95rem;
-    padding: 12px;
-  }
-
-  button#loadBtn {
-    width: 100%;
-    padding: 12px;
-    font-size: 0.9rem;
-  }
-
-  .stats {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .stat-value {
-    font-size: 1.25rem;
-  }
-
-  .tap-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
-
-  .tap-amount {
-    align-self: flex-end;
-    font-size: 1.05rem;
-  }
-
-  .tap-src {
-    font-size: 0.75rem;
-  }
-}
-
-/* EXTRA: telefoni molto piccoli */
-@media (max-width:380px){
-  .header h1 {
-    font-size: 1.25rem;
-  }
-
-  .stat-value {
-    font-size: 1.15rem;
-  }
-}
+    @media (max-width:600px){
+    
+      body {
+        padding: 16px 12px;
+      }
+    
+      .header h1 {
+        font-size: 1.4rem;
+      }
+    
+      .header p {
+        font-size: 0.85rem;
+      }
+    
+      .card {
+        padding: 14px;
+      }
+    
+      .row {
+        flex-direction: column;
+        gap: 8px;
+      }
+    
+      input#address {
+        font-size: 0.95rem;
+        padding: 12px;
+      }
+    
+      button#loadBtn {
+        width: 100%;
+        padding: 12px;
+        font-size: 0.9rem;
+      }
+    
+      .stats {
+        flex-direction: column;
+        gap: 8px;
+      }
+    
+      .stat-value {
+        font-size: 1.25rem;
+      }
+    
+      .tap-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+    
+      .tap-amount {
+        align-self: flex-end;
+        font-size: 1.05rem;
+      }
+    
+      .tap-src {
+        font-size: 0.75rem;
+      }
+    }
+    
+    /* EXTRA: telefoni molto piccoli */
+    @media (max-width:380px){
+      .header h1 {
+        font-size: 1.25rem;
+      }
+    
+      .stat-value {
+        font-size: 1.15rem;
+      }
+    }
 
     </style>
 </head>
@@ -400,40 +400,40 @@
             document.getElementById('balance').textContent = nackl ? (parseInt(nackl.value, 16) / 1e9).toFixed(2) : '0.00';
             
 
-const taps = [];
-let hasNextPage = true;
-let cursor = null;
-let totalFetched = 0;
-
-while (hasNextPage) {
-    const msgRes = await fetch(API, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-            query: `query($a:String!, $after:String){
-                blockchain{
-                    account(address:$a){
-                        messages(first:50, msg_type:[IntIn], after:$after){
-                            edges{
-                                node{
-                                    id
-                                    created_at
-                                    src
-                                    value_other{currency value}
-                                    body
+    const taps = [];
+    let hasNextPage = true;
+    let cursor = null;
+    let totalFetched = 0;
+    
+    while (hasNextPage) {
+        const msgRes = await fetch(API, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                query: `query($a:String!, $after:String){
+                    blockchain{
+                        account(address:$a){
+                            messages(first:50, msg_type:[IntIn], after:$after){
+                                edges{
+                                    node{
+                                        id
+                                        created_at
+                                        src
+                                        value_other{currency value}
+                                        body
+                                    }
                                 }
-                            }
-                            pageInfo{
-                                endCursor
-                                hasNextPage
+                                pageInfo{
+                                    endCursor
+                                    hasNextPage
+                                }
                             }
                         }
                     }
-                }
-            }`,
-            variables: {a: addr, after: cursor}
-        })
-    }).then(r => r.json());
+                }`,
+                variables: {a: addr, after: cursor}
+            })
+        }).then(r => r.json());
     
     const messages = msgRes.data.blockchain.account.messages;
     const edges = messages?.edges || [];
