@@ -81,13 +81,13 @@ export default async function handler(req, res) {
     const initData = req.headers['x-telegram-init-data'] || '';
     const user = checkTelegramAuth(initData);
     if (!user) {
-      return res.status(401).json({ error: 'Apri il tracker dal bot Telegram' });
+      return res.status(401).json({ error: 'Open the tracker from the Telegram bot' });
     }
 
     // 2) Verifica membership canale premium
     const premium = await isPremiumMember(user.id);
     if (!premium) {
-      return res.status(403).json({ error: 'Non sei nel canale premium' });
+      return res.status(403).json({ error: 'Subscribe to the GOLD channel: https://t.me/+GsMPPRnYcMtiOTY8' });
     }
 
     // 3) Balance NACKL
