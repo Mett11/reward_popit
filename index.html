@@ -546,12 +546,13 @@
   let telegramInitData = null;
 
   document.addEventListener('DOMContentLoaded', function() {
+    // Inizializza Telegram Mini App (se aperta da bot)
     if (window.Telegram && window.Telegram.WebApp) {
       Telegram.WebApp.ready();
       telegramInitData = Telegram.WebApp.initData;
     }
 
-    // tutto il tuo codice popup infoBtn / overlay ecc. qui sotto (uguale)
+    // Gestione popup info (uguale a prima)
     const infoBtn = document.getElementById('infoBtn');
     const popup = document.getElementById('infoPopup');
     const overlay = document.getElementById('popupOverlay');
@@ -574,6 +575,12 @@
         closePopup();
       }
     });
+
+    // Enter sull'input address
+    const addrInput = document.getElementById('address');
+    addrInput.addEventListener('keypress', e => {
+      if (e.key === 'Enter') load();
+    });
   });
 
   async function load() {
@@ -595,12 +602,14 @@
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'API error');
 
+      // Stats principali
       document.getElementById('balance').textContent = data.balance.toFixed(2);
       document.getElementById('taps').textContent = data.tapsCount;
       document.getElementById('recentRewards').textContent =
         "+" + data.totalReward.toFixed(2);
       document.getElementById('stats').style.display = 'flex';
 
+      // Lista reward
       const taps = data.taps;
       if (!taps.length) {
         document.getElementById('tapsList').innerHTML =
@@ -635,11 +644,8 @@
       btn.disabled = false;
     }
   }
-
-  document.getElementById('address').addEventListener('keypress', e => {
-    if (e.key === 'Enter') load();
-  });
 </script>
+
 
 
 </body>
