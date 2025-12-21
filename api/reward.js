@@ -1,6 +1,59 @@
-// api/reward.js
+import crypto from 'crypto';
+
 const API = 'https://mainnet.ackinacki.org/graphql';
 const POPIT_CODE_HASH = '18365592c5f1e7d319cc1a2fd58fa05ca3afbe4ac49e73bc765d139a2e2d7a29';
+
+const BOT_TOKEN = process.env.TG_BOT_TOKEN;
+const PREMIUM_CHAT_ID = process.env.TG_PREMIUM_CHANNEL_ID;
+
+// ---- Telegram auth helpers ----
+
+function checkTelegramAuth(initData) {
+  if (!initData || !BOT_TOKEN) return null;
+
+  const params = new URLSearchParams(initData);
+  const hash = params.get('hash');
+  if (!hash) return null;
+
+  const data = [];
+  params.forEach((value, key) => {
+    if (key !== 'hash') data.push(`${key}=${value}`);
+  });
+  data.sort();
+  const dataCheckString = data.join('\n');
+
+  const secretKey = crypto
+    .createHmac('sha256', 'WebAppData')
+    .update(BOT_TOKEN)
+    .digest();
+
+  const calcHash = crypto
+    .createHmac('sha256', secretKey)
+    .update(dataCheckString)
+    .digest('hex');
+
+  if (calcHash !== hash) return null;
+
+  const userStr = params.get('user');
+  const user = userStr ? JSON.parse(userStr) : null;
+  return user; // { id, username, ... }
+}
+
+async function isPremiumMember(userId) {
+  if (!PREMIUM_CHAT_ID || !BOT_TOKEN) return false;
+
+  const url = `https://api.telegram.org/bot${BOT_TOKEN}/getChatMember` +
+              `?chat_id=${encodeURIComponent(PREMIUM_CHAT_ID)}` +
+              `&user_id=${userId}`;
+  const resp = await fetch(url);
+  const data = await resp.json();
+  if (!data.ok) return false;
+
+  const status = data.result.status;
+  return ['member', 'administrator', 'creator'].includes(status);
+}
+
+// ---- GraphQL helper ----
 
 async function graphql(query, variables) {
   const res = await fetch(API, {
@@ -15,6 +68,8 @@ async function graphql(query, variables) {
   return json.data;
 }
 
+// ---- Handler ----
+
 export default async function handler(req, res) {
   try {
     const addr = (req.query.address || '').trim();
@@ -22,9 +77,20 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing address' });
     }
 
-    // TODO: qui dopo metti check Telegram + canale premium
+    // 1) Verifica Telegram WebApp (initData)
+    const initData = req.headers['x-telegram-init-data'] || '';
+    const user = checkTelegramAuth(initData);
+    if (!user) {
+      return res.status(401).json({ error: 'Apri il tracker dal bot Telegram' });
+    }
 
-    // 1) Balance NACKL
+    // 2) Verifica membership canale premium
+    const premium = await isPremiumMember(user.id);
+    if (!premium) {
+      return res.status(403).json({ error: 'Non sei nel canale premium' });
+    }
+
+    // 3) Balance NACKL
     const balData = await graphql(
       `query($a:String!){
          blockchain{
@@ -42,7 +108,7 @@ export default async function handler(req, res) {
       ?.find(b => b.currency === 1);
     const balance = nackl ? (parseInt(nackl.value, 16) / 1e9) : 0;
 
-    // 2) Reward messages
+    // 4) Reward messages
     const taps = [];
     let hasNextPage = true;
     let cursor = null;
@@ -94,10 +160,10 @@ export default async function handler(req, res) {
       hasNextPage = messages.pageInfo?.hasNextPage || false;
       cursor = messages.pageInfo?.endCursor || null;
 
-      if (taps.length > 2000) break; // safety
+      if (taps.length > 2000) break;
     }
 
-    // 3) code_hash per POPIT
+    // 5) code_hash per POPIT
     const uniqueSrc = [...new Set(taps.map(t => t.src))];
     const codeHashByAddress = {};
 
