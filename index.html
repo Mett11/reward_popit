@@ -587,7 +587,7 @@
     document.getElementById('tapsList').innerHTML = '<div class="empty">Loading...</div>';
 
     try {
-      const res = await fetch(`/api/reward?address=${encodeURIComponent(addr)}`, {
+      const res = await fetch(`/reward?address=${encodeURIComponent(addr)}`, {
         headers: {
           'X-Telegram-Init-Data': telegramInitData || ''
         }
