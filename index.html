@@ -541,167 +541,106 @@
     </section>
   </div>
 
-  <script>
-    const API = 'https://corsproxy.io/?https://mainnet.ackinacki.org/graphql';
-    
-    async function load() {
-        const addr = document.getElementById('address').value.trim();
-        if (!addr) return alert('Enter address');
-        
-        const btn = document.getElementById('loadBtn');
-        btn.disabled = true;
-        
-        document.getElementById('loading').style.display = 'flex';
-        document.getElementById('stats').style.display = 'none';
-       
-        document.getElementById('tapsList').innerHTML = '<div class="empty">Loading...</div>';
-        
-        try {
-       
-            const balRes = await fetch(API, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    query: `query($a:String!){blockchain{account(address:$a){info{balance_other{currency value}}}}}`,
-                    variables: {a: addr}
-                })
-            }).then(r => r.json());
-            
-            if (!balRes.data || !balRes.data.blockchain) {
-                throw new Error('Invalid response from GraphQL');
-            }
-            
-            const nackl = balRes.data.blockchain.account?.info?.balance_other?.find(b => b.currency === 1);
-            document.getElementById('balance').textContent = nackl ? (parseInt(nackl.value, 16) / 1e9).toFixed(2) : '0.00';
-            
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+  let telegramInitData = null;
 
-			const taps = [];
-			let hasNextPage = true;
-			let cursor = null;
-			let totalFetched = 0;
-			
-			while (hasNextPage) {
-			    const msgRes = await fetch(API, {
-			        method: 'POST',
-			        headers: {'Content-Type': 'application/json'},
-			        body: JSON.stringify({
-			            query: `query($a:String!, $after:String){
-			                blockchain{
-			                    account(address:$a){
-			                        messages(first:50, msg_type:[IntIn], after:$after){
-			                            edges{
-			                                node{
-			                                    id
-			                                    created_at
-			                                    src
-			                                    value_other{currency value}
-			                                    body
-			                                }
-			                            }
-			                            pageInfo{
-			                                endCursor
-			                                hasNextPage
-			                            }
-			                        }
-			                    }
-			                }
-			            }`,
-			            variables: {a: addr, after: cursor}
-			        })
-			    }).then(r => r.json());
-			    
-			    const messages = msgRes.data.blockchain.account.messages;
-			    const edges = messages?.edges || [];
-			    
-			
-			    edges.forEach(({node}) => {
-			        if (node.body === null && node.value_other) {
-			            const reward = node.value_other.find(v => v.currency === 1);
-			            if (reward) {
-			                taps.push({
-			                    id: node.id,
-			                    src: node.src,
-			                    reward: parseInt(reward.value, 16) / 1e9,
-			                    timestamp: node.created_at,
-			                    time: new Date(node.created_at * 1000).toLocaleString('it-IT', {
-			                        day: '2-digit', month: '2-digit', year: 'numeric',
-			                        hour: '2-digit', minute: '2-digit', second: '2-digit'
-			                    })
-			                });
-			            }
-			        }
-			    });
-			    
-			    hasNextPage = messages.pageInfo?.hasNextPage || false;
-			    cursor = messages.pageInfo?.endCursor || null;
-			}
-
-
-
-            taps.sort((a, b) => b.timestamp - a.timestamp);
-   
-            document.getElementById('taps').textContent = taps.length;
-            document.getElementById('recentRewards').textContent = "+"+taps.reduce((s, t) => s + t.reward, 0).toFixed(2);
-            document.getElementById('stats').style.display = 'flex';
-            
-            
-            if (taps.length === 0) {
-                document.getElementById('tapsList').innerHTML = '<div class="empty">No reward messages found</div>';
-            } else {
-                document.getElementById('tapsList').innerHTML = taps.map(t => `
-                    <div class="tap-card">
-                        <div class="tap-meta">
-                            <div class="tap-time">${t.time}</div>
-                            
-                            <div class="tap-src">${t.src}</div>
-
-                        </div>
-                        <div class="tap-amount">${t.reward.toFixed(4)} <span>NACKL</span></div>
-                    </div>
-                `).join('');
-            }
-            
-
-            
-        } catch (e) {
-
-            document.getElementById('tapsList').innerHTML = `<div class="empty" style="color:#f87171">Error: ${e.message}</div>`;
-        } finally {
-            document.getElementById('loading').style.display = 'none';
-            btn.disabled = false;
-        }
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.Telegram && window.Telegram.WebApp) {
+      Telegram.WebApp.ready();
+      telegramInitData = Telegram.WebApp.initData;
     }
-    
-    document.getElementById('address').addEventListener('keypress', e => {
-        if (e.key === 'Enter') load();
+
+    // tutto il tuo codice popup infoBtn / overlay ecc. qui sotto (uguale)
+    const infoBtn = document.getElementById('infoBtn');
+    const popup = document.getElementById('infoPopup');
+    const overlay = document.getElementById('popupOverlay');
+    const closeBtn = document.getElementById('popupClose');
+
+    infoBtn.addEventListener('click', function() {
+      popup.classList.add('active');
+      overlay.classList.add('active');
     });
-document.addEventListener('DOMContentLoaded', function() {
-      const infoBtn = document.getElementById('infoBtn');
-      const popup = document.getElementById('infoPopup');
-      const overlay = document.getElementById('popupOverlay');
-      const closeBtn = document.getElementById('popupClose');
 
-      infoBtn.addEventListener('click', function() {
-        popup.classList.add('active');
-        overlay.classList.add('active');
-      });
+    function closePopup() {
+      popup.classList.remove('active');
+      overlay.classList.remove('active');
+    }
 
-      function closePopup() {
-        popup.classList.remove('active');
-        overlay.classList.remove('active');
+    closeBtn.addEventListener('click', closePopup);
+    overlay.addEventListener('click', closePopup);
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && popup.classList.contains('active')) {
+        closePopup();
       }
+    });
+  });
 
-      closeBtn.addEventListener('click', closePopup);
-      overlay.addEventListener('click', closePopup);
+  async function load() {
+    const addr = document.getElementById('address').value.trim();
+    if (!addr) return alert('Enter address');
 
-      // Chiudi con ESC
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && popup.classList.contains('active')) {
-          closePopup();
+    const btn = document.getElementById('loadBtn');
+    btn.disabled = true;
+    document.getElementById('loading').style.display = 'flex';
+    document.getElementById('stats').style.display = 'none';
+    document.getElementById('tapsList').innerHTML = '<div class="empty">Loading...</div>';
+
+    try {
+      const res = await fetch(`/api/reward?address=${encodeURIComponent(addr)}`, {
+        headers: {
+          'X-Telegram-Init-Data': telegramInitData || ''
         }
       });
-    });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'API error');
+
+      document.getElementById('balance').textContent = data.balance.toFixed(2);
+      document.getElementById('taps').textContent = data.tapsCount;
+      document.getElementById('recentRewards').textContent =
+        "+" + data.totalReward.toFixed(2);
+      document.getElementById('stats').style.display = 'flex';
+
+      const taps = data.taps;
+      if (!taps.length) {
+        document.getElementById('tapsList').innerHTML =
+          '<div class="empty">No reward messages found</div>';
+      } else {
+        document.getElementById('tapsList').innerHTML = taps.map(t => `
+          <div class="tap-card">
+            <div class="tap-meta">
+              <div class="tap-time">${new Date(t.timestamp * 1000).toLocaleString('it-IT', {
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute: '2-digit', second: '2-digit'
+              })}</div>
+              <div class="tap-src">
+                ${t.src}
+                ${t.is_popit
+                  ? '<span style="color:#22c55e;font-size:11px;margin-left:6px;">[POPIT]</span>'
+                  : ''
+                }
+              </div>
+            </div>
+            <div class="tap-amount">
+              ${t.reward.toFixed(4)} <span>NACKL</span>
+            </div>
+          </div>
+        `).join('');
+      }
+    } catch (e) {
+      document.getElementById('tapsList').innerHTML =
+        `<div class="empty" style="color:#f87171">Error: ${e.message}</div>`;
+    } finally {
+      document.getElementById('loading').style.display = 'none';
+      btn.disabled = false;
+    }
+  }
+
+  document.getElementById('address').addEventListener('keypress', e => {
+    if (e.key === 'Enter') load();
+  });
 </script>
+
 
 </body>
 </html>
