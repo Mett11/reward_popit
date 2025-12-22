@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Popit Rewards</title>
-    <style>
+      <style>
       :root {
             --bg: #101010;
     --bg-card: #101010;
@@ -61,6 +61,8 @@ body::-webkit-scrollbar-thumb {
 
       .header {
         margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
       }
 
       .header h1 {
@@ -273,7 +275,14 @@ color:white; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
         font-size:0.75rem;
         color:var(--muted);
       }
-
+#logo{width:35px}
+#logo-box{
+width: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0px 15px;
+}
  .info-btn {
     
    background: var(--bg);
