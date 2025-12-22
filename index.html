@@ -32,27 +32,27 @@
   	--sb-size: 10px;
       }
 
-	body::-webkit-scrollbar {
-	  width: var(--sb-size);
-	}
-	
-	body::-webkit-scrollbar-track {
-	  background: var(--sb-track-color);
-	  border-radius: 6px;
-	}
-	
-	body::-webkit-scrollbar-thumb {
-	  background: var(--sb-thumb-color);
-	  border-radius: 6px;
-	  border: 3px solid #232E33;
-	}
-	
-	@supports not selector(::-webkit-scrollbar) {
-	  body {
-	      scrollbar-color: var(--sb-thumb-color)
-	                     var(--sb-track-color);
-	  }
-	}
+body::-webkit-scrollbar {
+  width: var(--sb-size);
+}
+
+body::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 6px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 6px;
+  border: 3px solid #232E33;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  body {
+      scrollbar-color: var(--sb-thumb-color)
+                     var(--sb-track-color);
+  }
+}
 
       .wrap {
         width: 100%;
@@ -113,7 +113,7 @@
       input#address::placeholder { color:#64748b; }
 
       input#address:focus {
-        border-color: var(--primary);
+        border-color: var(--accent);
         box-shadow: 0 0 0 1px rgba(59,130,246,0.5);
       }
 
@@ -121,8 +121,8 @@
         padding:10px 16px;
         border-radius:10px;
         border:none;
-        background:var(--primary);
-        color:white;
+        background: var(--accent);
+    color: black;
         font-size:0.85rem;
         font-weight:600;
         cursor:pointer;
@@ -176,11 +176,13 @@
       }
 
       .stat {
-        flex:1;
-        padding:8px 10px;
-        border-radius:10px;
-        border:1px solid var(--border);
-        background: var(--bg)
+            flex: 1;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
      
       }
 
@@ -249,9 +251,9 @@
         margin-bottom:3px;
       }
       .tap-src-header{
-		color:white; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-		        font-size:0.78rem;
-		}
+color:white; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        font-size:0.78rem;
+}
       .tap-src {
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
         font-size:0.78rem;
@@ -275,7 +277,7 @@
  .info-btn {
     
    background: var(--bg);
-    border: 2px solid var(--border);
+    border: 2px solid var(--text);
     color: var(--text);
     padding: 3px 7px;
     border-radius: 8px;
@@ -289,7 +291,7 @@
 
     .info-btn:hover {
       background: rgba(59, 130, 246, 0.3);
-      border-color: var(--primary);
+      border-color: var(--accent)
      
     }
 
@@ -309,7 +311,6 @@
       box-shadow: 0 25px 50px rgba(0,0,0,0.5);
       z-index: 1000;
       backdrop-filter: blur(20px);
-	  width: 100%;
     }
 
     .info-popup.active {
@@ -365,14 +366,12 @@
     }
 
     .popup-step {
-          padding: 12px;
-    background: var(--bg);
-    border-left: 2px solid var(--text) border-radius: 6px;
-    font-size: 0.95rem;
+      padding: 12px;
+      background: (--text);
+      border-left: 2px solid var(--text)
+      border-radius: 6px;
+      font-size: 0.95rem;
     }
-		.popup-step a{
-			color:white
-		}
 
     .popup-overlay {
       display: none;
@@ -389,14 +388,14 @@
     .popup-overlay.active {
       display: block;
     }
-	.container-header{
-	    display: flex;
-	    align-items: flex-end;
-	    flex-direction: row;
-	    flex-wrap: nowrap;
-	    justify-content: flex-start;
-	    padding: 10px 4px;
-	}
+.container-header{
+    display: flex;
+    align-items: flex-end;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    padding: 10px 4px;
+}
 
       @media (max-width:600px){
         body {
@@ -406,54 +405,64 @@
         .header h1 {
           font-size: 1.4rem;
         }
-		 
-	        .header p {
-	          font-size: 0.85rem;
-	        }
-	
-	        .card {
-	          padding: 14px;
-	        }
-	
-	        .row {
-	          flex-direction: column;
-	          gap: 8px;
-	        }
-	
-	        input#address {
-	          font-size: 0.95rem;
-	          padding: 12px;
-	        }
-	
-	        button#loadBtn {
-	          width: 100%;
-	          padding: 12px;
-	          font-size: 0.9rem;
-	        }
-	
-	        .stats {
-	          flex-direction: column;
-	          gap: 8px;
-	        }
-	
-	        .stat-value {
-	          font-size: 1.25rem;
-	        }
-	
-	        .tap-card {
-	          flex-direction: column;
-	          align-items: flex-start;
-	          gap: 6px;
-	        }
-	
-	        .tap-amount {
-	          align-self: flex-end;
-	          font-size: 1.05rem;
-	        }
-	
-	        .tap-src {
-	          font-size: 0.75rem;
-	        }
+ .info-popup {
+           width: 90%;
+    margin: auto;
+    padding: 40px;
+      }
+      
+      .info-btn {
+
+        padding: 5px 8px;
+        font-size: 0.75rem;
+      }
+        .header p {
+          font-size: 0.85rem;
+        }
+
+        .card {
+          padding: 14px;
+        }
+
+        .row {
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        input#address {
+          font-size: 0.95rem;
+          padding: 12px;
+        }
+
+        button#loadBtn {
+          width: 100%;
+          padding: 12px;
+          font-size: 0.9rem;
+        }
+
+        .stats {
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .stat-value {
+          font-size: 1.25rem;
+        }
+
+        .tap-card {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 6px;
+        }
+
+        .tap-amount {
+          align-self: flex-end;
+          font-size: 1.05rem;
+        }
+
+        .tap-src {
+          font-size: 0.75rem;
+        }
       }
 
       @media (max-width:380px){
